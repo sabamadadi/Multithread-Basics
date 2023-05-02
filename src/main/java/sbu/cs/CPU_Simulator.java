@@ -2,6 +2,7 @@ package sbu.cs;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 /*
@@ -19,11 +20,21 @@ import java.util.List;
 
 public class CPU_Simulator
 {
+        public static class Pair{
+            long a;
+            Task b;
+
+            public Pair(long a, Task b) {
+                this.a = a;
+                this.b = b;
+            }
+        }
     public static class Task implements Runnable {
         long processingTime;
         String ID;
         public Task(String ID, long processingTime) {
-        // TODO
+            this.processingTime = processingTime;
+            this.ID = ID;
         }
 
     /*
@@ -32,7 +43,11 @@ public class CPU_Simulator
     */
         @Override
         public void run() {
-        // TODO
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
@@ -43,12 +58,32 @@ public class CPU_Simulator
     */
     public ArrayList<String> startSimulation(ArrayList<Task> tasks) {
         ArrayList<String> executedTasks = new ArrayList<>();
-
-        // TODO
+        ArrayList<Pair> sort = new ArrayList<>();
+        for(Task task : tasks)
+        {
+            sort.add(new Pair(task.processingTime,task));
+        }
+        Comparator<Pair> comparator = new Comparator<Pair>() {
+            @Override
+            public int compare(Pair p1, Pair p2) {
+                return Long.compare(p1.a, p2.a);
+            }
+        };
+        sort.sort(comparator);
+        for(Pair pair : sort)
+        {
+            Thread thread = new Thread(pair.b);
+            thread.start();
+            try {
+                thread.join();
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
+            executedTasks.add(pair.b.ID);
+        }
 
         return executedTasks;
     }
-
     public static void main(String[] args) {
     }
 }
