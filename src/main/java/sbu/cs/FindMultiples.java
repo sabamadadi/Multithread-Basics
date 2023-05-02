@@ -19,6 +19,8 @@ package sbu.cs;
     Use the tests provided in the test folder to ensure your code works correctly.
  */
 
+import java.util.HashSet;
+
 public class FindMultiples
 {
 
@@ -29,12 +31,50 @@ public class FindMultiples
     The getSum function should be called at the start of your program.
     New Threads and tasks should be created here.
     */
+    public static class find implements Runnable
+    {
+        public static int sum;
+        public static HashSet<Integer> added;
+        public int dev;
+        public int n;
+        public find(int dev,int n) {
+            this.dev = dev;
+            this.n=n;
+        }
+        public static synchronized void check(int i)
+        {
+            if(!added.contains(i)) {
+                sum+=i;
+                added.add(i);
+            }
+        }
+        @Override
+        public void run() {
+            for(int i = 1 ; i <= n ; i++)
+            {
+                if(i % dev == 0)
+                    check(i);
+            }
+        }
+    }
     public int getSum(int n) {
-        int sum = 0;
+        find.sum=0;
+        find.added=new HashSet<>();
+        Thread thread1 = new Thread(new find(3,n));
+        Thread thread2 = new Thread(new find(7,n));
+        Thread thread3 = new Thread(new find(5,n));
+        thread3.start();
+        thread2.start();
+        thread1.start();
+        try {
+            thread3.join();
+            thread2.join();
+            thread1.join();
+        }catch (InterruptedException e)
+        {
 
-        // TODO
-
-        return sum;
+        }
+        return find.sum;
     }
 
     public static void main(String[] args) {
