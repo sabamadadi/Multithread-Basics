@@ -1,5 +1,9 @@
 # Multithread Basics
 
+Sixth Assignment of Advanced Programming course at Shahid Beheshti University (Spring 2023)
+
+Score: 110 out of 100
+
 ## Introduction
 In this assignment, you are given three introductory exercises focused on the basics of multithreading. Solve each exercise according to the provided guidelines.
 
